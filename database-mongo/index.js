@@ -1,11 +1,13 @@
 var mongoose = require('mongoose');
 //using URI stored on heroku or localhost
-mongoose.connect(process.env.MONGODB_URI | 'mongodb://localhost/test');
+const uri = process.env.MONGODB_URI ? process.env.MONGODB_URI : 'mongodb://localhost/test'
 
+mongoose.connect(uri);
 
 var db = mongoose.connection;
 
 db.on('error', function() {
+  console.log(process.env.MONGODB_URI);
   console.log('mongoose connection error');
 });
 
