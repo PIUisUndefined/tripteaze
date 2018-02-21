@@ -7,7 +7,7 @@
     "react-dev": "webpack -d --watch",
     "server-dev": "nodemon server/index.js",
     "start": "webpack -d | node server/index.js",
-    "postinstall": "npm install -dev | node node_modules/webpack/bin/webpack.js --display-error-details"
+    "postinstall": "node node_modules/webpack/bin/webpack.js --display-error-details"
   },
   "author": "PIU - Stephanie Chou, Trent Hendricks, Mickey McClenon, Krisha Mehta",
   "license": "ISC",
