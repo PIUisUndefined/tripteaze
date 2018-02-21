@@ -4,7 +4,7 @@ const db = require('../database-mongo');
 
 const app = express();
 
-
+// /    <script type="text/javascript" src="bundle.js"></script>
 app.use(express.static(__dirname + '/../react-client/dist'));
 
 app.get('/items', function (req, res) {
