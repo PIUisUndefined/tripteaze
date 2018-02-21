@@ -6,6 +6,7 @@ mongoose.connect(process.env.MONGODB_URI | 'mongodb://localhost/test');
 var db = mongoose.connection;
 
 db.on('error', function() {
+  console.log(process.env.MONGODB_URI);
   console.log('mongoose connection error');
 });
 
