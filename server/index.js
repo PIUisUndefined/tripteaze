@@ -8,19 +8,12 @@ const User = require('../database-mongo/index.js'); // Check database file FILL_
 const app = express();
 app.use(bodyParser.json());
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 app.use(session({
 	secret: 'shhhhh af',
 	resave: false,
 	saveUnitialized: true
 }));
 
-=======
-// /    <script type="text/javascript" src="bundle.js"></script>
->>>>>>> Trying to troubleshoot heroku
-=======
->>>>>>> works on localhost?
 app.use(express.static(__dirname + '/../react-client/dist'));
 
 app.checkPassword = (users, userName, pw) => {
