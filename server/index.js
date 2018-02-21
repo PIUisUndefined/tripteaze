@@ -9,6 +9,7 @@ const app = express();
 app.use(bodyParser.json());
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 app.use(session({
 	secret: 'shhhhh af',
 	resave: false,
@@ -18,6 +19,8 @@ app.use(session({
 =======
 // /    <script type="text/javascript" src="bundle.js"></script>
 >>>>>>> Trying to troubleshoot heroku
+=======
+>>>>>>> works on localhost?
 app.use(express.static(__dirname + '/../react-client/dist'));
 
 app.checkPassword = (users, userName, pw) => {
