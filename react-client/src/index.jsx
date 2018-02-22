@@ -18,20 +18,20 @@ import User from './components/userPage.jsx';
 import Search from './components/searchPage.jsx';
 
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Route,
   Switch
 } from 'react-router-dom';
 
 const Root = ({ store }) => (
   <Provider store={store}>
-    <Router>
-      <Switch>
+    <BrowserRouter>
+      <div>
         <Route exact path="/" component={Home} />
-        <Route path = "/trips" component={User} />
-        <Route path="/plan" component={Search} />
-      </Switch>
-    </Router>
+        <Route path = "/yourTrips" component={User} />
+        <Route path = "/plan" component={Search} />
+      </div>
+    </BrowserRouter>
   </Provider>
 )
 

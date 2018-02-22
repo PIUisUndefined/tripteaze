@@ -32,10 +32,6 @@ let Signup = (props) => {
 					<input type="submit" value="Sign up"/>
 				</div>
 			</form>
-
-			<p>
-			<a href="/login">Login</a>
-			</p>
 		</div>
 	);
 }
