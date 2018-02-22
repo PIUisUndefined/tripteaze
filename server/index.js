@@ -32,15 +32,15 @@ app.get('/login', (req, res) =>{
   let userName = req.query.username
   let password = req.query.password
 
-  db.fetch().then((users) => {
-    if (app.checkPassword(users, userName, password)) {
-      req.session.loggedIn = true;
-      res.end();
-    } else {
-      alert('Unmatching username and password');
-      res.end();
-    }
-  })
+  // db.fetch().then((users) => {
+  //   if (app.checkPassword(users, userName, password)) {
+  //     req.session.loggedIn = true;
+  //     res.end();
+  //   } else {
+  //     alert('Unmatching username and password');
+  //     res.end();
+  //   }
+  // })
 })
 
 
@@ -66,7 +66,7 @@ app.post('/signup', (req, res) => {
 		// Need to check db for new user model // FILL_ME_IN_SON
 		username: username
 	})
-	.fetch()
+	//.fetch()
 	.then(user => {
 		// If the user does not exist
 		if (!user) {
