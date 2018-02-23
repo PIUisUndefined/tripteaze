@@ -50,7 +50,7 @@ export const signup = (username, password) => {
     return axios({
       method: 'post',
       url: '/signup',
-      body: {
+      data: {
         username: username,
         password: password
       }

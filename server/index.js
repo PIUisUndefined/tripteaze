@@ -59,46 +59,73 @@ app.get('/logout', (req, res) => {
 
 /*************************** SIGN UP STUFF ***************************/
 
+// ***************STILL NEED TO CREATE NEW SESSION FOR USER ***************
+
 // Sign up
 app.post('/signup', (req, res) => {
 	console.log(req.body, req.query, 'signup')
 	let username = req.body.username;
 	let password = req.body.password;
 
-	// Creates new user
-	new User({
-		// Need to check db for new user model // FILL_ME_IN_SON
-		username: username
-	})
-	.fetch()
-	.then(user => {
-		// If the user does not exist
-		if (!user) {
-			// Hash the password
-			bcrypt.hash(password, null, null, (err, hash) => {
-				if (err) {
-					throw err;
-				} else {
-					// Store new username/hashed password in database
-					// (username, hash) call function from db to store username and hash // FILL_ME_IN_SON
-				}})
-				.then(newUser => {
-					// Creates new session for the user
-					createSession(req, res, newUser);
-				});
+	// Checks if the username already exists in the db
+	User.userExists(username, (existingUser) => {
+		// If the username already exists
+		if (existingUser.length > 0) {
+			console.log('Username already exists!');
+			// Redirect to the signup page
+			res.redirect(200, '/signup');
+		// Else if new user
 		} else {
-			// If account already exists, redirect to signup page
-			console.log('Account already exists!');
-			res.redirect('/signup');
+			// Hash the password
+			let hashed = bcrypt.hash(password, 10, (err, hash) => {
+				if (err) {
+					console.error('Error in hash password: ', err);
+				} else {
+					// Store the new user/hash in the db
+					User.addNewUser(username, hash);
+					console.log(`User '${username}' added to database`);
+				}
+			});
 		}
 	});
+
+
+	
+	// // Creates new user
+	// new User({
+	// 	name: username
+	// })
+	// .then(user => {
+	// 	// If the user does not exist
+	// 	if (!user) {
+	// 		// Hash the password
+	// 		bcrypt.hash(password, null, null, (err, hash) => {
+	// 			if (err) {
+	// 				throw err;
+	// 			} else {
+	// 				// Store new username/hashed password in database
+	// 				db.addNewUser(username, hash);
+	// 			}})
+	// 			.then(newUser => {
+	// 				// Creates new session for the user
+	// 				createSession(req, res, newUser);
+	// 			});
+	// 	} else {
+	// 		// If account already exists, redirect to signup page
+	// 		console.log('Account already exists!');
+	// 		res.redirect('/signup');
+	// 	}
+	// 	res.statusCode = 200;
+	// 	res.end();
+	// });
 });
 
 // Creates new session after new user is added to the database
 const createSession = (req, res, newUser) => {
 	return req.session.regenerate(() => {
 		req.session.user = newUser;
-		res.redirect('/'); // Where do we want to redirect? FILL_ME_IN_SON
+		// Redirects to home page
+		res.redirect('/');
 	});
 }
 /*************************** TRIP STUFF ***************************/

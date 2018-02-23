@@ -173,6 +173,23 @@ let addNewUser = (name, password) => {
   );
 };
 
+// checks if username already exists in the database and
+// returns that user
+let userExists = (username, cb) => {
+  // checks database based on input username
+  User.find({
+    name: username
+  }, (err, existingUser) => {
+    if (err) {
+      console.error('error in userExists: ', err);
+    } else {
+      console.log('user', existingUser);
+      // callback on the existing user if it exists
+      cb(existingUser);
+    }
+  })
+};
+
 //for login page-take in username and retrieve password from db
 //on server side, bcrypt will be used to compare user input password to stored db password
 //if they match user will be logged in, otherwise error message
@@ -284,4 +301,6 @@ module.exports.showUserTrips = showUserTrips;
 module.exports.modifyTripDetails = modifyTripDetails;
 module.exports.remove = remove;
 module.exports.showAllPublicTrips = showAllPublicTrips;
+module.exports.userExists = userExists;
+
 

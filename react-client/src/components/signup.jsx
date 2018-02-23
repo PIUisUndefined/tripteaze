@@ -7,12 +7,12 @@ let Signup = (props) => {
 		props.signup(props.username, props.password);
 	}
 
-	let changeUsername = () => {
-		props.updateUsername(props.username);
+	let changeUsername = event => {
+		props.updateUsername(event.target.value);
 	}
 
-	let changePassword = () => {
-		props.updatePassword(props.password);
+	let changePassword = event => {
+		props.updatePassword(event.target.value);
 	}
 	
 	return (
