@@ -2,13 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
-
 const db = require('../database-mongo/index.js'); 
 const eventbrite = require('../APIhelper/eventbrite.js');
-
-
-
-
 
 const app = express();
 app.use(bodyParser.json());
@@ -27,10 +22,13 @@ app.use(express.static(__dirname + '/../react-client/dist'));
 
 app.checkPassword = (userName, pw, checkPw) => {
   let match = false;
-    let unhashedPw = bcrypt.compareSync(pw, checkPw);
+	console.log('before brypt')
+    let unhashedPw = bcrypt.compareSync(pw, checkPw)
+		console.log('after bcrypt')
     if (unhashedPw) {
       match = true;
     }
+		console.log('match', match)
   return match;
 }
 
@@ -40,6 +38,7 @@ app.get('/login', (req, res) =>{
 
   db.retrieveUserPassword(userName, (userPw) => {
 		if (app.checkPassword(userName, password, userPw)) {
+			console.log('hit in if')
 			req.session.loggedIn = true;
 			res.end()
 		} else {
@@ -88,8 +87,6 @@ app.post('/signup', (req, res) => {
 			})
 		}
 	})
-
-	console.log('REQ SESSION: ', req.session)
 });
 
 // Creates new session after new user is added to the database
@@ -100,6 +97,7 @@ const createSession = (req, res, newUser) => {
 		res.redirect('/trips');
 	});
 }
+
 /*************************** TRIP STUFF ***************************/
 app.get('/trips', (req, res) => {
 	const type = req.query.search; // right now tailored for public trips but can be adapted for user trips as well
@@ -108,71 +106,45 @@ app.get('/trips', (req, res) => {
 			if (err) {
 				res.status(500).end(err);
 			} else {
-				res.status(200).json({trips: data});
+				res.status(200).json({trips: data})
 			}
-		});
+		})
 	} else {
-		db.showUserTrips(type, function(err, data) {
-			if (err) {
-				res.status(500).end(err);
-			} else {
-				res.status(200).json({ trips: data });
-			}
-		});
+		res.status(500).end();
 	}
 });
 
 app.post('/trips', (req, res) => {
 	const user = (req.body.tripUser);
 	const city = (req.body.tripCity);
-
 	db.addNewTrip(user, city, function(err, data) {
 		if (err) {
 			console.log(err);
 			res.status(500).send(err);
 		} else {
-
+			console.log(data);
 			res.status(200);
 			res.status(200).json({ city: data.city });
 		}
 	});
 })
 
-app.patch('/trips', (req, res) => {
-	console.log(req.body, 'body');
-	if (req.body.public !== undefined) {
-		db.modifyTripDetails(req.body.public, null, req.body.user, req.body.tripCity, function(err, data) {
-			if (err) {
-				res.status(500).send(err);
-			} else {
-				res.status(202).end();
-			}
-		})
-	} else {
-		db.remove('trip', req.body.tripID, function(err, data) {
-			if (err) {
-				res.status(500).send(err);
-			} else {
-				res.status(202).end();
-			}			
-		})
-	}
-});
-
 /******************************** Search - Events *****************************/
 
 app.post('/events', function (req, res) {
-	const city = req.body.tripCity;
-	const query = req.body.eventQuery;
-	
-	eventbrite.searchEvents(query, city, (err, data) => {
+	//var eventQuery = req.body.query;
+	console.log('heresbody',req.body);
+	eventbrite.searchEvents('bollywood', (err, data) => {
 		if(err) {
-			console.log('error', err);
-			res.status(500).send(err);
+			res.sendStatus(500);
+			console.log('error');
 		} else {
-			res.status(200);
-			res.status(200).json(data);
+			res.statusCode=201;
+			data.forEach((event) => {
+				console.log('heresdata', event.name.text);
+			});
 		}
+		res.end();
 	});
 
 });
