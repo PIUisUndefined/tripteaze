@@ -194,10 +194,13 @@ let userExists = (username, cb) => {
 //if they match user will be logged in, otherwise error message
 let retrieveUserPassword = (username, callback) => {
   User.find({name: username}, function(err, user) {
-    if(err) {
-      throw err;
-    } else {
+    // If the user exists in the database
+    if (user.length > 0) {
+      // Then run the callback on that user's password
       callback(user[0].password);
+    } else {
+      // Should probably send an alert or something...
+      console.log('user does not exist');
     }
   });
 };

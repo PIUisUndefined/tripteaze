@@ -23,7 +23,7 @@ app.use(express.static(__dirname + '/../react-client/dist'));
 app.checkPassword = (userName, pw, checkPw) => {
   let match = false;
 	console.log('before brypt')
-    let unhashedPw = bcrypt.compareSync(pw, checkPw)
+		let unhashedPw = bcrypt.compareSync(pw, checkPw)
 		console.log('after bcrypt')
     if (unhashedPw) {
       match = true;
@@ -34,15 +34,15 @@ app.checkPassword = (userName, pw, checkPw) => {
 
 app.get('/login', (req, res) =>{
   let userName = req.query.username
-  let password = req.query.password
-
+	let password = req.query.password
+	
   db.retrieveUserPassword(userName, (userPw) => {
 		if (app.checkPassword(userName, password, userPw)) {
 			console.log('hit in if')
 			req.session.loggedIn = true;
-			res.end()
+			res.end();
 		} else {
-			console.log('Unmatching username and password')
+			console.log('Unmatching username and password');
       res.end();
 		}
 	})
@@ -62,7 +62,6 @@ app.get('/logout', (req, res) => {
 
 // Sign up
 app.post('/signup', (req, res) => {
-	console.log(req.body, req.query, 'signup');
 	let username = req.body.username;
 	let password = req.body.password;
 
@@ -70,7 +69,6 @@ app.post('/signup', (req, res) => {
 	db.userExists(username, (existingUser) => {
 		// If the username already exists
 		if (existingUser.length > 0) {
-			console.log('Username already exists!');
 			// Redirect to the signup page
 			res.redirect(200, '/trips');
 		// Else if new user
@@ -78,11 +76,10 @@ app.post('/signup', (req, res) => {
 			// Hash the password
 			bcrypt.hash(password, 10, (err, hash) => {
 				if (err) {
-					console.error('Error in hash password: ', err);
+					throw err;
 				} else {
 					// Store the new user/hash in the db
 					db.addNewUser(username, hash);
-					console.log(`User '${username}' added to database`);
 				}
 			})
 		}
