@@ -2,9 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
-
-const db = require('../database-mongo/index.js'); 
+const db = require('../database-mongo/index.js');
 const eventbrite = require('../APIhelper/eventbrite.js');
+const zomato = require('../APIhelper/zomatoHelper.js')
 
 
 const app = express();
@@ -45,7 +45,6 @@ app.get('/login', (req, res) =>{
 		}
 	})
 })
-
 
 app.get('/logout', (req, res) => {
    req.session.destroy((err) => {
@@ -181,7 +180,7 @@ app.patch('/trips', (req, res) => {
 				res.status(500).send(err);
 			} else {
 				res.status(202).end();
-			}			
+			}
 		})
 	}
 });
@@ -191,9 +190,11 @@ app.patch('/trips', (req, res) => {
 app.post('/events', function (req, res) {
 	const city = req.body.tripCity;
 	const query = req.body.eventQuery;
+
 	const fromDate = req.body.tripFromDate;
 
 	eventbrite.searchEvents(query, city, fromDate, (err, data) => {
+
 		if(err) {
 			console.log('error', err);
 			res.status(500).send(err);
@@ -206,7 +207,7 @@ app.post('/events', function (req, res) {
 
 app.post('/events/remove', function (req, res) {
 	var removedElement = req.body.eventID;
-	db.remove('event', req.body.eventID); 
+	db.remove('event', req.body.eventID);
 	res.statusCode=201;
 	res.end();
 });
@@ -237,6 +238,28 @@ app.get('/events', (req, res) => {
 	});
 });
 
+/********************************* Search - Foods ***************************/
+
+app.post('/foods', (req, res) => {
+	let city =  req.body.tripCity;
+	let searchFood = req.body.foodQuery;
+	zomato.searchForCityId( city, ( err, data ) => {
+		if (err) {
+			res.sendStatus(400)
+		} else {
+			let cityId = data
+			zomato.searchForFoods( cityId, searchFood, (err, result) => {
+				if (err) {
+					res.sendStatus(400)
+					console.log('err')
+				} else {
+					res.send(200, result)
+				}
+				res.end();
+			})
+		}
+	})
+})
 
 /****************************************************************************/
 const port = process.env.PORT || 3000;

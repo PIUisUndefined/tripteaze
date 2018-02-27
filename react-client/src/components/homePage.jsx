@@ -29,7 +29,7 @@ class Home extends React.Component {
   toUserPage () {
     this.props.history.push('/trips');
   }
-  
+
   toSearchPage () {
     this.props.history.push('/plan')
   }
@@ -39,7 +39,7 @@ class Home extends React.Component {
     let state = this.props.state;
   //has props.state with all the state things
   //and props.actions with all the action creating functions
-  
+
     return (
       <Paper>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -58,7 +58,7 @@ class Home extends React.Component {
           <RaisedButton label="User Page" onClick={this.toUserPage.bind(this)} />
           <RaisedButton label="Search Page" onClick={this.toSearchPage.bind(this)} />
         </div>
-    
+
         <div style = {{display: 'flex', flexDirection: 'column', textAlign: 'center'}}>
           <h1> TripTeaze </h1>
           <h3> ~Discover~ </h3>

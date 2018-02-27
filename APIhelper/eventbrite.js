@@ -22,6 +22,7 @@ let searchEvents = (query, city, fromDate, cb) => {
 		}
 	}
 
+
 	request(params, callback);
 
 }

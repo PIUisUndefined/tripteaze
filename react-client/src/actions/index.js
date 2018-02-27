@@ -54,7 +54,7 @@ export const signup = (username, password) => {
         password: password
       }
     }).then (
-      results =>  dispatch(authenticate()),
+      results => dispatch(authenticate()),
       error => dispatch(badStuff(error))
     );
   };
@@ -78,8 +78,11 @@ export const updateCity = (city) => ({ type: 'UPDATE_CITY', payload: city });
 
 export const updateEventQuery = (query) => ({ type: 'UPDATE_EVENTQUERY', payload: query });
 
+export const updateFoodQuery = (query) => ({ type: 'UPDATE_FOODQUERY', payload: query})
+
 export const makeNewTrip = (username, city, index, fromDate, toDate) => {
   return (dispatch) => {
+
     return axios({
       method: 'post',
       url: '/trips',
@@ -114,46 +117,27 @@ export const searchEvents = (city, query, fromDate) => {
   };
 }
 
-export const addEventToTrip = (event, username, city) => {
+export const searchForFood = (city, query) => {
   return (dispatch) => {
     return axios({
       method: 'post',
-      url: '/events/add',
+      url: '/foods',
       data: {
-        tripEvent: event,
-        tripUser: username,
-        tripCity: city
+        tripCity: city,
+        foodQuery: query
       }
     }).then(
-      results => {dispatch(fetchEventsFromTrip(username, city))},
+      results => (dispatch(updateFoodResults(results.data))),
       error => dispatch(badStuff(error))
-    );
-  };
+    )
+  }
 }
 
-export const fetchEventsFromTrip = (username, city) => {
-  //dispatch({ type: 'LOADING' });
-  return (dispatch) => {
-    return axios({
-      method: 'get',
-      url: '/events',
-      params: {
-        tripUser: username,
-        tripCity: city
-      }
-    }).then(
-      results => {
-        dispatch(setTripEvents(results.data.events))},
-      error => dispatch(badStuff(error))
-    );
-  }
-};
-
-const setTripEvents = (events) => ({ type: 'SHOW_TRIP_EVENTS', payload: events});
+const updateFoodResults = (searchResults) => ({ type: 'UPDATE_FOODRESULTS', payload: searchResults})
 
 const updateEventResults = (searchResults) => ({ type: 'UPDATE_EVENTRESULTS', payload: searchResults});
 
-export const activateTrip = (tripIndex) => ({ type: 'SET_TRIP', payload: tripIndex});
+export const activateTrip = (city) => ({ type: 'SET_TRIP', payload: city});
 
 //////////////////////////////USER PAGE STUFF \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -174,6 +158,7 @@ export const deleteTrip = (user, trip) => {
 }
 
 export const toggleTripStatus = (user, trip) => {
+  console.log(user, trip);
   return dispatch => {
     return axios ({
       method: 'patch',
@@ -211,5 +196,5 @@ export const toggleTripStatus = (user, trip) => {
 //     not have to say dispatch when we usually call action functions
 // -actions are dispatched from the front-end (or here because of our middleware to handle asynchronicity)
 //   the return statement is automatically passed onto the reducer under the parameter action
-// -the capital names are action types, commonly reducers use this key in a switch to decide what to do 
+// -the capital names are action types, commonly reducers use this key in a switch to decide what to do
 //   with the other parameters associated with the action (to modify the state)
