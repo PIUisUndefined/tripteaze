@@ -32,7 +32,7 @@ class UserPage extends React.Component {
   render() {
     if (this.props.state.authenticated === true) {
       return (
-        <Paper>
+        <Paper style={{ display: 'flex', flexFlow: 'row wrap', margin: '10px' }}>
           <div>
             <h2> {this.generateMessage()} </h2>
             <Link to='/plan'>SearchPage</Link>
@@ -49,7 +49,7 @@ class UserPage extends React.Component {
       );
     } else {
       return (
-        <Paper>
+        <Paper style={{ display: 'flex', flexFlow: 'row wrap', margin: '10px' }}>
         <h2> Sorry! Please log in to access this content! </h2>
         <Link to='/'> Home </Link>
         </Paper>

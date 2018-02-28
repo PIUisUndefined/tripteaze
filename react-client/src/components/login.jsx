@@ -58,6 +58,7 @@ class Login extends React.Component {
           onRequestClose={this.handleClose.bind(this)}>
           <label>Username:</label>
           <TextField id='LUsername' type="text" onChange={this.changeUsername.bind(this)} />
+          <br/>
           <label>Password:</label>
           <TextField id='LPassword' type="password" onChange={this.changePassword.bind(this)} />
         </Dialog>

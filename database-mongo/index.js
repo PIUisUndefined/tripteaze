@@ -96,36 +96,45 @@ let addNewTrip = (username, city, fromDate, toDate, callback) => {
   });
 };
 
-let addRestaurantToTrip = (restaurant, username, city) => {
+let addRestaurantToTrip = (food, username, city, callback) => {
   //first find corresponding user
   User.findOne({name: username}, function (err, user) {
     if(err) {
       console.log('error: ', err);
+      callback(err);
+    } else {
+      console.log(user);
+      Trip.findOne({user: user.id, city: city}, function (err, trip) {
+        if(err) {
+          console.log('error', err);
+          callback(err);
+        } else {
+          console.log(trip.city, trip.id);
+          Restaurant.findOneAndUpdate({ id: food.restaurant.id},
+            {$set: {
+              id: food.restaurant.id,
+              name: food.restaurant.name,
+              url: food.restaurant.url,
+              address: food.restaurant.location.address,
+              zip: food.restaurant.location.zipcode,
+              location: [food.restaurant.location.latitude, food.restaurant.location.longitude],
+              price: food.restaurant.price_range,
+              trip: trip.id
+              }
+            }, {upsert: true}, function(err) {
+              if(err) {
+                console.log('error: ', err);
+                callback(err);
+              } else {
+                callback();
+              }
+            }
+          );
+        }
+        //then add restaurant to database based on trip ID
+      });
     }
     //then find corresponding trip based on city for selected user
-    Trip.findOne({user: user.id, city: city}, function (err, trip) {
-      if(err) {
-        console.log('error', err);
-      }
-      //then add restaurant to database based on trip ID
-      Restaurant.findOneAndUpdate({id: restaurant.id},
-        {$set: {
-          name: restaurant.name,
-          id: restaurant.id,
-          url: restaurant.url,
-          address: restaurant.location.address,
-          zip: restaurant.location.zipcode,
-          location: [restaurant.location.latitude, restaurant.location.longitude],
-          price: restaurant.price_range,
-          trip: trip.id
-          }
-        }, {upsert: true}, function(err) {
-          if(err) {
-            console.log('error: ', err);
-          }
-        }
-      );
-    });
   });
 };
 
@@ -245,35 +254,50 @@ let showUserTrips = (username, callback) => {
 };
 
 let showTripEvents = (username, city, callback) => {
-  console.log(username, city);
 //first find corresponding user
   User.findOne({name: username}, function (err, user) {
     if(err || user === null) {
       console.log('error: ', err);
       callback(err);
-    }
-    //then find trip based on selected user and city
-    Trip.findOne({user: user.id, city: city}, function (err, trip) {
-      if(err || trip === null) {
-        console.log('error', err);
-        callback(err);
-    }
-    //then find all trips for selected user
-    Trip.find({user: user.id}, function (err, trips) {
-      if(err) {
-        callback(err, null);
-      } else {
-        callback(null, trips);
-      }
-
-      Event.find({trip: trip.id}, function (err, events) {
-        if(err) {
-          callback(err, null);
+    } else {
+      //then find trip based on selected user and city
+      Trip.findOne({user: user.id, city: city}, function (err, trip) {
+        if(err || trip === null) {
+          console.log('error', err);
+          callback(err);
         } else {
-          callback(null, events);
+          if(err) {
+            callback(err, null);
+          } else {
+            getTripEvents(trip.id, callback);
+          }
         }
       });
-    });
+    }
+  });
+};
+
+let showTripRestaurants = (username, city, callback) => {
+  //first find corresponding user
+  User.findOne({ name: username }, function (err, user) {
+    if (err || user === null) {
+      console.log('error: ', err);
+      callback(err);
+    } else {
+      //then find trip based on selected user and city
+      Trip.findOne({ user: user.id, city: city }, function (err, trip) {
+        if (err || trip === null) {
+          console.log('error', err);
+          callback(err);
+        } else {
+          if (err) {
+            callback(err, null);
+          } else {
+            getTripRestaurants(trip.id, callback);
+          }
+        }
+      });
+    }
   });
 };
 
@@ -338,7 +362,10 @@ let remove = (modelType, ID, callback) => {
   if(modelType === 'restaurant') {
     Restaurant.remove( {id: ID}, function (err) {
       if(err) {
-        callback(err);
+        console.log('error: ',err);
+        callback(err)
+      } else {
+        callback()
       }
     });
   } else if (modelType === 'event') {
@@ -346,6 +373,9 @@ let remove = (modelType, ID, callback) => {
       if(err) {
         callback(err);
         console.log('error: ',err);
+        callback(err)
+      } else {
+        callback()
       }
     });
   } else if (modelType === 'trip') {
@@ -353,10 +383,14 @@ let remove = (modelType, ID, callback) => {
       if(err) {
         callback(err);
         console.log('error: ',err);
+        callback(err)
+      } else {
+        callback()
       }
     });
   } else {
     console.log('must specify correct model type to remove');
+    callback(err);
   }
 };
 //for home page-displays all existing public trips
@@ -383,5 +417,40 @@ module.exports.remove = remove;
 module.exports.showAllPublicTrips = showAllPublicTrips;
 module.exports.userExists = userExists;
 module.exports.showTripEvents = showTripEvents;
+module.exports.showTripRestaurants = showTripRestaurants;
 module.exports.getTripRestaurants = getTripRestaurants;
 module.exports.getTripEvents = getTripEvents;
+
+
+// {restaurant: { 
+//   R: { res_id: 16608481 },
+//   apikey: '4c7506bb724adf55c75f64091cfc569e',
+//   id: '16608481',
+//   name: 'Old Woolstore',
+//   url: 'https://www.zomato.com/kingston-se-sa/old-woolstore-kingston-se?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+//   location: {
+//     address: '11 Hansen St Kingston Sa, Kingston SE',
+//     locality: 'Kingston SE',
+//     city: 'Kingston SE',
+//     city_id: 1814,
+//     latitude: '-36.8287500000',
+//     longitude: '139.8503820000',
+//     zipcode: '5275',
+//     country_id: 14,
+//     locality_verbose: 'Kingston SE, Kingston SE'
+//     },
+//   switch_to_order_menu: 0,
+//   cuisines: 'Others',
+//   average_cost_for_two: 30,
+//   price_range: 3,
+//   currency: '$',
+//   offers: [],
+//   thumb: '',
+//   user_rating: {
+//     aggregate_rating: '2.8',
+//     rating_text: 'Average',
+//     rating_color: 'FFBA00',
+//     votes: '4'
+//     }
+//   }
+// }

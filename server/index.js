@@ -101,23 +101,31 @@ app.get('/trips', (req, res) => {
 	const type = req.query.search; // right now tailored for public trips but can be adapted for user trips as well
 	if (type === 'public') {
 		db.showAllPublicTrips(function(err, data) {
-			getTripsEvents(data, function (err, tripsEvents) {
-				if (err) {
-					res.status(500).end(err);
-				} else {
-					res.status(200).json({ trips: tripsEvents });
-				}
-			});
+			if (err  || !data) {
+				res.status(500).end(err);
+			} else {
+				getTripsEvents(data, function (err, tripsEvents) {
+					if (err) {
+						res.status(500).end(err);
+					} else {
+						res.status(200).json({ trips: tripsEvents });
+					}
+				});
+			}
 		});
 	} else {
 		db.showUserTrips(type, function(err, data) {
-			getTripsEvents(data, function (err, tripsEvents) {
-				if (err) {
-					res.status(500).end(err);
-				} else {
-					res.status(200).json({ trips: tripsEvents });
-				}
-			});
+			if (err || !data) {
+				res.status(500).end(err);
+			} else {
+				getTripsEvents(data, function (err, fullTrips) {
+					if (err) {
+						res.status(500).end(err);
+					} else {
+						res.status(200).json({ trips: fullTrips });
+					}
+				});
+			}
 		});
 	}
 });
@@ -134,6 +142,7 @@ getTripsEvents = (trips, callback) => {
 			fromDate: trips[i].tripFromDate,
 			toDate: trips[i].tripToDate
 		}));
+
 		const tripID = trips[i].id
 		db.getTripEvents(tripID, function (err, events) {
 			fullTrips[i].events = events;
@@ -143,7 +152,7 @@ getTripsEvents = (trips, callback) => {
 				if (numFinished === trips.length) {
 					callback(null, fullTrips);
 				}
-			})
+			});
 		});
 	}
 }
@@ -251,21 +260,58 @@ app.post('/foods', (req, res) => {
 	let searchFood = req.body.foodQuery;
 	zomato.searchForCityId( city, ( err, data ) => {
 		if (err) {
-			res.sendStatus(400)
+			res.status(500).end()
 		} else {
 			let cityId = data
 			zomato.searchForFoods( cityId, searchFood, (err, result) => {
 				if (err) {
-					res.sendStatus(400)
+					res.status(500).end();
 					console.log('err')
 				} else {
-					res.send(200, result)
+					res.status(200).json({foods: result})
 				}
 				res.end();
 			})
 		}
-	})
-})
+	});
+});
+
+app.post('/foods/remove', function (req, res) {
+	console.log('food to be removed', req.body);
+	db.remove('restaurant', req.body.foodID, function (err) {
+		if (err) {
+			res.status(500).send(err);
+		} else {
+			res.status(200).end();
+		}
+	});
+});
+
+app.post('/foods/add', function (req, res) {
+	const food = req.body.tripFood;
+	const user = req.body.tripUser;
+	const city = req.body.tripCity;
+	db.addRestaurantToTrip(food, user, city, function (err) {
+		if (err) {
+			console.log(err);
+			res.status(500).send(err);
+		} else {
+			res.status(201).end();
+		}
+	});
+});
+
+app.get('/foods', (req, res) => {
+	const user = req.query.tripUser;
+	const city = req.query.tripCity;
+	db.showTripRestaurants(user, city, function (err, data) {
+		if (err) {
+			res.status(500).end(err);
+		} else {
+			res.status(200).json({ foods: data });
+		}
+	});
+});
 
 /****************************************************************************/
 const port = process.env.PORT || 3000;

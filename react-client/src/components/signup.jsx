@@ -61,6 +61,7 @@ class Signup extends React.Component {
 					onRequestClose={this.handleClose.bind(this)}>
 					<label>Username:</label>
 					<TextField id = "SUUsername" onChange = {this.changeUsername.bind(this)} />
+					<br/>
 					<label>Password:</label>
 					<TextField id = 'SUPassword' type="password" onChange = {this.changePassword.bind(this)} />
 				</Dialog>

@@ -66,6 +66,8 @@ export const badStuff = (error) => ({type: 'ERROR', payload: error});
 
 /////////////////////////////SEARCH PAGE STUFF \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
+/*****************************MAKE A TRIP *************************************/
+
 // Updates the "from" date for the trip
 export const updateFromDate = (date) => ({ type: 'UPDATE_TRIP_FROM_DATE', payload: date });
 
@@ -75,10 +77,6 @@ export const updateToDate = (date) => ({ type: 'UPDATE_TRIP_TO_DATE', payload: d
 export const setMinToDate = (date) => ({ type: 'SET_MIN_TO_DATE', payload: date });
 
 export const updateCity = (city) => ({ type: 'UPDATE_CITY', payload: city });
-
-export const updateEventQuery = (query) => ({ type: 'UPDATE_EVENTQUERY', payload: query });
-
-export const updateFoodQuery = (query) => ({ type: 'UPDATE_FOODQUERY', payload: query})
 
 export const makeNewTrip = (username, city, index, fromDate, toDate) => {
   return (dispatch) => {
@@ -94,11 +92,16 @@ export const makeNewTrip = (username, city, index, fromDate, toDate) => {
       }
     }).then(
       results => {
+        dispatch(activateTrip(index));
         dispatch(fetchTrips(username))},
         error => dispatch(badStuff(error))
     );
   };
 }
+
+/***************************** EVENTS *************************************/
+
+export const updateEventQuery = (query) => ({ type: 'UPDATE_EVENT_QUERY', payload: query });
 
 export const searchEvents = (city, query, fromDate) => {
   return (dispatch) => {
@@ -117,6 +120,48 @@ export const searchEvents = (city, query, fromDate) => {
   };
 }
 
+const updateEventResults = (searchResults) => ({ type: 'UPDATE_EVENT_RESULTS', payload: searchResults });
+
+export const addEventToTrip = (event, username, city) => {
+  return (dispatch) => {
+    return axios({
+      method: 'post',
+      url: '/events/add',
+      data: {
+        tripEvent: event,
+        tripUser: username,
+        tripCity: city
+      }
+    }).then(
+      results => { dispatch(fetchEventsFromTrip(username, city)) },
+      error => dispatch(badStuff(error))
+    );
+  };
+}
+
+export const fetchEventsFromTrip = (username, city) => {
+  //dispatch({ type: 'LOADING' });	
+  return (dispatch) => {
+    return axios({	
+      method: 'get',
+        url: '/events',
+        params: {	
+          tripUser: username,
+          tripCity: city	
+        }
+      }).then(
+        results => {dispatch(setTripEvents(results.data.events))},
+        error => {dispatch(badStuff(err))}
+      )
+  }
+}
+
+const setTripEvents = (events) => ({ type: 'REFRESH_TRIP_EVENTS', payload: events });
+
+/***************************** FOOD *************************************/
+
+export const updateFoodQuery = (query) => {return { type: 'UPDATE_FOOD_QUERY', payload: query }};
+
 export const searchForFood = (city, query) => {
   return (dispatch) => {
     return axios({
@@ -127,17 +172,50 @@ export const searchForFood = (city, query) => {
         foodQuery: query
       }
     }).then(
-      results => (dispatch(updateFoodResults(results.data))),
+      results => {dispatch(updateFoodResults(results.data.foods))},
       error => dispatch(badStuff(error))
     )
   }
 }
+  
+const updateFoodResults = (searchResults) => ({ type: 'UPDATE_FOOD_RESULTS', payload: searchResults})
 
-const updateFoodResults = (searchResults) => ({ type: 'UPDATE_FOODRESULTS', payload: searchResults})
+export const addFoodToTrip = (food, username, city) => {
+  return (dispatch) => {
+    return axios({
+      method: 'post',
+      url: '/foods/add',
+      data: {
+        tripFood: food,
+        tripUser: username,
+        tripCity: city
+      }
+    }).then(
+      results => { dispatch(fetchFoodFromTrip(username, city)) },
+      error => dispatch(badStuff(error))
+    );
+  };
+}
 
-const updateEventResults = (searchResults) => ({ type: 'UPDATE_EVENTRESULTS', payload: searchResults});
+export const fetchFoodFromTrip = (username, city) => {
+  //dispatch({ type: 'LOADING' });	
+  return (dispatch) => {
+    return axios({
+      method: 'get',
+      url: '/foods',
+      params: {
+        tripUser: username,
+        tripCity: city
+      }
+    }).then(
+      results => { 
+        dispatch(setTripEatin(results.data.foods)) },
+      error => { dispatch(badStuff(err)) }
+    )
+  }
+}
 
-export const activateTrip = (city) => ({ type: 'SET_TRIP', payload: city});
+const setTripEatin = (foods) => ({ type: 'REFRESH_TRIP_EATIN', payload: foods });
 
 //////////////////////////////USER PAGE STUFF \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -167,13 +245,12 @@ export const deleteEvent = (event, username, city) => {
       }
     }).then (
       results => {dispatch(fetchEventsFromTrip(username,city))},
-      error => dispatch(badStuff(error))
-    )
-  }
+      error => {dispatch(badStuff(error))}
+    );
+  };
 }
 
 export const toggleTripStatus = (user, trip) => {
-  console.log(user, trip);
   return dispatch => {
     return axios ({
       method: 'patch',
@@ -190,6 +267,10 @@ export const toggleTripStatus = (user, trip) => {
   }
 }
 
+export const activateTrip = (tripIndex) => ({ type: 'ACTIVATE', payload: tripIndex });
+
+export const deactivate = () => ({type: 'DEACTIVATE'});
+  
 //ACTION_NAME must correspond with reducer switch option
 
 //  complex action example w/ async
