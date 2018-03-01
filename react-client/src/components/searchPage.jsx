@@ -196,6 +196,9 @@ class SearchPage extends React.Component {
     return (
       <div>
         <Link to= 'trips'> UserPage </Link>
+        <Link to='/'>
+          <RaisedButton onClick={this.props.actions.logOut} label='Log Out' />
+        </Link>
         {drawer()}
         <Paper style = {{display: 'flex', flexFlow: 'row wrap', margin: '10px'}}>
           <div style= {{ display: 'flex', flexFlow: 'column wrap' }}>

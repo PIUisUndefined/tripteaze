@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Paper from 'material-ui/Paper';
 import { connect } from 'react-redux';
-import * as actions from '../actions/index.js';
 import { bindActionCreators } from 'redux';
-import Trip from './trip.jsx';
 import {Link} from 'react-router-dom';
+
+import Paper from 'material-ui/Paper';
+import { RaisedButton } from 'material-ui';
+
+import Trip from './trip.jsx';
+import * as actions from '../actions/index.js';
 
 class UserPage extends React.Component {
   constructor (props) {
@@ -36,6 +39,9 @@ class UserPage extends React.Component {
           <div>
             <h2> {this.generateMessage()} </h2>
             <Link to='/plan'>SearchPage</Link>
+            <Link to='/'> 
+              <RaisedButton onClick = {this.props.actions.logOut} label = 'Log Out' /> 
+            </Link>
             {this.props.state.trips.map((trip, index) => 
               <Trip key = {index}
                 user = {this.props.state.username} 

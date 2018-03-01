@@ -38,6 +38,8 @@ const reducer = function (state = initialState, action) {  //if state is undefin
       return Object.assign({}, state, {password: action.payload})
     case 'AUTHEN' :
       return Object.assign({}, state, { authenticated: true });
+    case 'LOGOUT' :
+      return initialState;
     case 'UPDATE_EVENT_QUERY':
       return Object.assign({}, state, {eventQuery: action.payload});
     case 'UPDATE_FOOD_QUERY':

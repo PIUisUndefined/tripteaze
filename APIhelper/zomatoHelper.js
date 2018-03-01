@@ -1,12 +1,21 @@
 const request = require('request');
-const config = require('../config.js');
+
+let key;
+
+if (!process.env.ZOMATO) {
+  console.log('dev environment')
+  config = require('../config.js');
+  key = config.zomatoKey;
+} else {
+  key = process.env.ZOMATO;
+}
 
 let searchForFoods = ( cityId, searchFood, cb ) => {
   
   let params = {
     url: `https://developers.zomato.com/api/v2.1/search?entity_id=${cityId}&entity_type=city&q=${searchFood}&count=25`,
     headers: {
-      'user-key': config.zomatoKey
+      'user-key': key
     }
   }
   console.log(cityId, searchFood);

@@ -72,6 +72,21 @@ export const signup = (username, password) => {
   };
 }
 
+export const logOut = () => {
+  return (dispatch) => {
+    return axios ({
+      method: 'get',
+      url: 'logout', 
+    }).then(
+      results => {
+        dispatch(deauthenticate());
+      }
+    )
+  }
+}
+
+export const deauthenticate = () => ({ type: 'LOGOUT' });
+
 export const authenticate = () => ({ type: 'AUTHEN' });
 
 export const badStuff = (error) => ({type: 'ERROR', payload: error});

@@ -54,7 +54,7 @@ app.get('/logout', (req, res) => {
        throw err
      }
    })
-   res.redirect(301, /* figured could redirect to*/ '/login' /*or'/homepage' */);
+   res.end();
 })
 
 /*************************** SIGN UP STUFF ***************************/
