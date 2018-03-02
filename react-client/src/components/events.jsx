@@ -12,18 +12,18 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    width: '50%'
+    // width: '50%'
   },
   gridList: {
     width: '100%',
-    height: 600,
+    height: 800,
     overflowY: 'auto',
   },
   anchor: {
     color: 'white'
   }
 };
-//{moment(event.start.local).format('MM/DD/YY hh:mm A')} - { moment(event.end.local).format('MM/DD/YY hh:mm A')}
+
 const Events = (props) => {
 
 
@@ -34,7 +34,6 @@ const Events = (props) => {
           cellHeight={180}
           style={styles.gridList}
         >
-          <Subheader>Events</Subheader>
           {props.events.map((event) => {
             if (event.logo) {
               return (
@@ -55,7 +54,12 @@ const Events = (props) => {
                   key={event.id}
                   title={event.name.text}
                   subtitle='date range'
-                  actionIcon={<IconButton onClick={() => props.addEventToTrip(event, props.user, props.city)}><AddBorder color="white" /></IconButton>}
+                  actionIcon={
+                    <IconButton
+                      onClick={() => props.addEventToTrip(event, props.user, props.city)}
+                    >
+                      <AddBorder color="white" />
+                    </IconButton>}
                 >
                   <Snackbar open={props.eventSnackbar} message={'Event has been added to your trip!'} autoHideDuration={3000} onRequestClose={props.onRequestClose}/>
                   <img src='' />

@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
+const config = require('../config.js');
 
 let uri;
 
 if (!process.env.MONGODB_URI) {
   console.log('DEV')
-  config = require('../config.js');
   uri = config.mongo;
 } else {
   console.log('PROCESS PICKED UP', process.env.MONGODB_URI)
@@ -54,6 +54,7 @@ var restaurantSchema = Schema({
   url: String,
   address: String,
   zip: Number,
+  logo: String,
   //latitude and longitude coordinates are placed in 'location' property
   location: [{type: Number}],
   price: Number,
@@ -124,6 +125,7 @@ let addRestaurantToTrip = (food, username, city, callback) => {
               id: food.restaurant.id,
               name: food.restaurant.name,
               url: food.restaurant.url,
+              logo: food.restaurant.featured_image,
               address: food.restaurant.location.address,
               zip: food.restaurant.location.zipcode,
               location: [food.restaurant.location.latitude, food.restaurant.location.longitude],

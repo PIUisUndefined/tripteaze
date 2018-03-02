@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { GridList, GridTile } from 'material-ui/GridList';
-import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 import AddBorder from 'material-ui/svg-icons/content/add-circle-outline';
 
@@ -13,11 +12,11 @@ const Eatin = (props) => {
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'space-around',
-      width: '50%'
+      // width: '50%'
     },
     gridList: {
       width: '100%',
-      height: 600,
+      height: 800,
       overflowY: 'auto',
     },
     anchor: {
@@ -32,7 +31,6 @@ const Eatin = (props) => {
           cellHeight={180}
           style={styles.gridList}
         >
-          <Subheader>restaurants</Subheader>
           {props.restaurants.map((food) => {
             if (food.restaurant.featured_image) {
               return (
