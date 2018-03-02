@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
+const config = require('../config.js');
 
+<<<<<<< HEAD
 let uri;
 
 if (!process.env.MONGODB_URI) {
@@ -12,6 +14,11 @@ if (!process.env.MONGODB_URI) {
 }
 //URI is stored either on heroku or local config file
 console.log('heyyyyooooooo');
+=======
+//using URI stored on heroku or localhost
+const uri = process.env.MONGODB_URI ? process.env.MONGODB_URI : config.mongo;
+
+>>>>>>> progress on stylin
 let Schema = mongoose.Schema;
 mongoose.connect(uri);
 
@@ -54,6 +61,7 @@ var restaurantSchema = Schema({
   url: String,
   address: String,
   zip: Number,
+  logo: String,
   //latitude and longitude coordinates are placed in 'location' property
   location: [{type: Number}],
   price: Number,
@@ -124,6 +132,7 @@ let addRestaurantToTrip = (food, username, city, callback) => {
               id: food.restaurant.id,
               name: food.restaurant.name,
               url: food.restaurant.url,
+              logo: food.restaurant.featured_image,
               address: food.restaurant.location.address,
               zip: food.restaurant.location.zipcode,
               location: [food.restaurant.location.latitude, food.restaurant.location.longitude],
