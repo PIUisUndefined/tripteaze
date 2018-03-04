@@ -51,7 +51,6 @@ const Trip = (props) => {
   // Makes user's trip public
   const makePublic = () => {
     props.toggleStatus(props.user, props.trip);
-    console.log('heyyyy');
   }
 
   // Deletes a trip

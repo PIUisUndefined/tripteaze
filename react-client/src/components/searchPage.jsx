@@ -139,6 +139,7 @@ class SearchPage extends React.Component {
     if (value && index !== 0) {
       this.setState({dropdown: value, open: true});
       this.setState({activeCity: this.props.state.trips[index - 1].city});
+      this.setState({activeFromDate: this.props.state.trips[index - 1].fromDate, activeToDate: this.props.state.trips[index - 1].toDate});
       this.props.actions.updateCity('');
       this.props.actions.activateTrip(index - 1);
     } else if (index === 0) {
@@ -165,7 +166,7 @@ class SearchPage extends React.Component {
     if (state.authenticated) {
       if (state.city !== '' && state.tripFromDate !== '' && state.tripToDate !== '') {
         this.props.actions.makeNewTrip(state.username, state.city, state.trips.length, state.tripFromDate, state.tripToDate);
-        this.setState({ activeCity: state.city, open: true });
+        this.setState({ activeCity: state.city, open: true, activeFromDate: state.tripFromDate, activeToDate: state.tripToDate});
       }
     }
   };
