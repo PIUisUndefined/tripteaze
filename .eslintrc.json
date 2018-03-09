@@ -1,0 +1,84 @@
+{
+  "plugins": [
+    "react",
+    "react-redux",
+    "import"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-redux/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
+  "rules": {
+    "eol-last": [
+      "error",
+      "always"
+    ],
+    "import/named": 2,
+    "indent": [
+      "error",
+      2
+    ],
+    "keyword-spacing": [
+      "error",
+      {
+        "before": true,
+        "after": true
+      }
+    ],
+    "no-console": "off",
+    "no-case-declarations": "off",
+    "no-var": "error",
+    "no-trailing-spaces": "error",
+    "quotes": [
+      2,
+      "single"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "never",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ],
+    "react/jsx-no-undef": 1,
+    "react/jsx-no-bind": [
+      2,
+      {
+        "allowArrowFunctions": true
+      }
+    ],
+    "react/jsx-tag-spacing": [
+      "error",
+      {
+        "closingSlash": "never",
+        "beforeSelfClosing": "always",
+        "afterOpening": "never",
+        "beforeClosing": "allow"
+      }
+    ],
+    "react/prop-types": "off",
+    "react-redux/mapStateToProps-no-store": "off",
+    "react-redux/prefer-separate-component-file": "off"
+  }
+}

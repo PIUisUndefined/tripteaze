@@ -7,11 +7,9 @@ import Login from './login.jsx';
 import Trip from './trip.jsx';
 import { Link } from 'react-router-dom';
 
-import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { cyan50, cyan100, cyan200, cyan300, cyan400, cyan500, cyan600, cyan700, cyan800, cyan900 } from 'material-ui/styles/colors';
-import FlatButton from 'material-ui/FlatButton';
+import { cyan50, cyan100, cyan200, cyan500, cyan600, cyan700, cyan800, cyan900 } from 'material-ui/styles/colors';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -79,9 +77,10 @@ export const styles = {
     fontFamily: 'Arial',
     fontSize: 45,
     fontWeight: 'bold',
-    paddingTop: '15%',
+    paddingTop: '5%',
     textAlign: 'center',
-    textDecoration: 'none'
+    textDecoration: 'none',
+    maxHeight: 150
   },
   navLinks: {
     display: 'flex',
@@ -91,7 +90,7 @@ export const styles = {
     position: 'absolute',
   },
   getStarted: {
-    background: `linear-gradient(to bottom right, white, #f9f9f9)`,
+    background: 'linear-gradient(to bottom right, white, #f9f9f9)',
     color: cyan600,
     fontSize: 25,
     fontWeight: 'bold',
@@ -107,11 +106,14 @@ export const styles = {
     textDecoration: 'none',
     color: cyan900
   }
-}
+};
 
 class Home extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
+
+    this.toSearchPage = this.toSearchPage.bind(this);
+    this.toUserPage = this.toUserPage.bind(this);
   }
 
   componentWillMount() {
@@ -119,29 +121,34 @@ class Home extends React.Component {
     this.props.actions.fetchTrips('public');
   }
 
-  toUserPage () {
+  toUserPage() {
     this.props.history.push('/trips');
   }
 
-  toSearchPage () {
-    this.props.history.push('/plan')
+  toSearchPage() {
+    this.props.history.push('/plan');
   }
 
   navBar() {
     let actions = this.props.actions; //access shortcuts
-    let store = this.props.store;
 
     if (this.props.store.authenticated) {
       return (
         <div style={styles.navLinks}>
-          <RaisedButton style = {{marginRight: '15px'}} onClick = {this.toUserPage.bind(this)} 
-            label = 'My Trips'
+          <RaisedButton
+            style={{marginRight: '15px'}}
+            onClick={this.toUserPage}
+            label='My Trips'
           />
-          <RaisedButton style={{ marginRight: '15px' }} onClick = {this.toSearchPage.bind(this)} 
-            label = 'Build'
+          <RaisedButton
+            style={{ marginRight: '15px' }}
+            onClick={this.toSearchPage}
+            label='Build'
           />
-          <RaisedButton style={{ marginRight: '15px' }} onClick = {actions.logOut}
-            label = 'Log Out'
+          <RaisedButton
+            style={{ marginRight: '15px' }}
+            onClick={actions.logOut}
+            label='Log Out'
           />
         </div>
       );
@@ -159,28 +166,37 @@ class Home extends React.Component {
 
           <RaisedButton
             label="Create new trip"
-            onClick={this.toSearchPage.bind(this)}
+            onClick={this.toSearchPage}
             style={styles.tripButton}
           />
         </div>
-      )
+      );
     } else {
       return (
         <div>
           <div style={styles.discoverTrips}>
             Get Started
-            <br/>
-            <div style={{color: cyan500, fontSize: 12, fontStyle: 'italic', fontWeight: 'normal'}}>Don't wait! Plan your next trip today!</div>
+            <br />
+            <div style={
+              {
+                color: cyan500,
+                fontSize: 12,
+                fontStyle: 'italic',
+                fontWeight: 'normal'
+              }
+            }>
+              Don&apos;t wait! Plan your next trip today!
+            </div>
           </div>
 
           <div style={{display: 'inline-block', marginTop: '1%'}}>
-          <Login login={actions.login}
-            username={store.username}
-            password={store.password}
-            updateUsername={actions.updateUsername}
-            updatePassword={actions.updatePassword}
-            forward={this.toUserPage.bind(this)}
-          />
+            <Login login={actions.login}
+              username={store.username}
+              password={store.password}
+              updateUsername={actions.updateUsername}
+              updatePassword={actions.updatePassword}
+              forward={this.toUserPage}
+            />
           </div>
           <div style={{display: 'inline-block', marginTop: '1%'}}>
             <Signup signup={actions.signup}
@@ -188,16 +204,16 @@ class Home extends React.Component {
               password={store.password}
               updateUsername={actions.updateUsername}
               updatePassword={actions.updatePassword}
-              forward={this.toUserPage.bind(this)}
+              forward={this.toUserPage}
             />
           </div>
         </div>
-      )
+      );
     }
   }
 
-  render () {
-    let actions = this.props.actions; //access shortcuts
+  render() {
+    // let actions = this.props.actions; //access shortcuts
     let store = this.props.store;
     //store is redux store
     //and props.actions with all the action creating functions
@@ -214,7 +230,7 @@ class Home extends React.Component {
               TripTeaze
             </Link>
           </div>
-          
+
           {/************************** CREATE TRIP **************************/}
           <div style={styles.body}>
             {this.getStarted()}
@@ -230,11 +246,11 @@ class Home extends React.Component {
 
         </Paper>
       </MuiThemeProvider>
-    )};
+    );}
 }
 
 const mapStateToProps = state => (
-  { store: state }
+  { store: state } // eslint-disable-line
 );
 
 const mapDispatchToProps = dispatch => (

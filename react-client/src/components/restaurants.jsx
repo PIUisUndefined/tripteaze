@@ -7,7 +7,8 @@ import Snackbar from 'material-ui/Snackbar';
 
 //these are search results for restaurants
 const Eatin = (props) => {
-
+  // console.log('props', props);
+  // console.log('store', props.store);
   const styles = {
     root: {
       display: 'flex',
@@ -37,26 +38,52 @@ const Eatin = (props) => {
               return (
                 <GridTile
                   key={food.restaurant.id}
-                  title= {<a style = {styles.anchor} href = {food.restaurant.url} target = "_blank" >{food.restaurant.name}</a>}
+                  title= {
+                    <a
+                      style={styles.anchor}
+                      href={food.restaurant.url}
+                      target="_blank"
+                    >{food.restaurant.name}</a>
+                  }
                   subtitle= {`Cost for Two $${food.restaurant.average_cost_for_two}`}
-                  actionIcon={<IconButton onClick={() => props.addFoodToTrip(food, props.user, props.city)}><AddBorder color="white" /></IconButton>}
+                  /*add props.tripId*/
+                  actionIcon={
+                    <IconButton
+                      onClick={
+                        () => props.addFoodToTrip(food, props.store.userTrips[props.store.activeTrip.index].id)
+                      }><AddBorder color="white" /></IconButton>}
                 >
-                  <Snackbar open={props.foodSnackbar} message={'Restaurant has been added to your trip!'} autoHideDuration={3000} onRequestClose={props.onRequestClose}/>
+                  <Snackbar
+                    open={props.foodSnackbar}
+                    message={'Restaurant has been added to your trip!'}
+                    autoHideDuration={3000}
+                    onRequestClose={props.onRequestClose}
+                  />
                   <img src={food.restaurant.featured_image} alt='' />
                 </GridTile>
               );
             } else {
-              return(
+              return (
                 <GridTile
                   key={food.restaurant.id}
                   title={food.restaurant.name}
                   subtitle={`Cost for Two $${food.restaurant.average_cost_for_two}`}
-                  actionIcon={<IconButton onClick={() => props.addFoodToTrip(food, props.user, props.city)}><AddBorder color="white" /></IconButton>}
+                  actionIcon={
+                    <IconButton
+                      onClick={
+                        () => props.addFoodToTrip(food, props.store.userTrips[props.store.activeTrip.index].id)
+                      }
+                    ><AddBorder color="white" /></IconButton>}
                 >
-                  <Snackbar open={props.foodSnackbar} message={'Restaurant has been added to your trip!'} autoHideDuration={3000} onRequestClose={props.onRequestClose}/>
+                  <Snackbar
+                    open={props.foodSnackbar}
+                    message={'Restaurant has been added to your trip!'}
+                    autoHideDuration={3000}
+                    onRequestClose={props.onRequestClose}
+                  />
                   <img src='' />
                 </GridTile>
-              )
+              );
             }
           })}
         </GridList>
@@ -65,6 +92,6 @@ const Eatin = (props) => {
   } else {
     return null;
   }
-}
+};
 
 export default Eatin;
